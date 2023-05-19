@@ -39,7 +39,12 @@ def find_response_triggers(events):
     elif len(likely_response_triggers) == 0:
         print("Warning: Missing all response triggers")
 
-              
+def remove_spurious_triggers(events):
+    spurious_triggers = [i for i in range(0, len(events)) if events[i,1]!=0 and events[i,1]==events[i-1,2] and events[i,0]-events[i-1,0]==1]
+    for i in spurious_triggers:
+        events = numpy.delete(events, i-1,0)
+        events[i-1,1] = 0 
+    return events             
 
 def check_triggers(events):
     #check for number of stimuli and response triggers. If it doesn't equal to 288 for AttenAud and 168 for AttenVis (per run), or if there are an unreasonable number of response triggers, flag to take a look.
@@ -134,7 +139,6 @@ def get_metadata_and_behaviour(events):
     return run_info, average_performance_in_run
 
 
-
 summary = pandas.DataFrame()
 average_performance = pandas.DataFrame()
 
@@ -147,8 +151,9 @@ for file in files:
         events = mne.find_events(raw, stim_channel='STI101')
     except:
         events = mne.find_events(raw, stim_channel='STI101',shortest_event=1)
-        print(colored("Warning: ValueError:shortest event length = 1",'yellow'))
+        print(colored("Warning: ValueError:shortest event length = 1",'blue'))
     find_response_triggers(events)
+    events = remove_spurious_triggers(events)
     problematic_events = check_triggers(events)
     if problematic_events.size >0:
         print(problematic_events)

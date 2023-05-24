@@ -8,9 +8,9 @@ Created on Tue May  9 15:03:31 2023
 import os
 import pandas
 
-paradigm = 'AttenAud'
-participant = '075801'
-date = 230311
+paradigm = 'Misophonia'
+participant = 'KSU_test'
+date = 230519
 
 MEG_dir = '/autofs/space/megraid_research/MEG/tal'
 

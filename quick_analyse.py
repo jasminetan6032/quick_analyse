@@ -150,7 +150,7 @@ for file in files:
     try:
         events = mne.find_events(raw, stim_channel='STI101')
     except:
-        events = mne.find_events(raw, stim_channel='STI101',shortest_event=1)
+        events = mne.find_events(raw, stim_channel='STI101',shortest_event=1,uint_cast= True)
         print(colored("Warning: ValueError:shortest event length = 1",'blue'))
     find_response_triggers(events)
     events = remove_spurious_triggers(events)

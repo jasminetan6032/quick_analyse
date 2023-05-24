@@ -70,7 +70,7 @@ def check_triggers(events):
     #check column two for any triggers that do not start from zero and extract events to eyeball
     non_zero_initial_states = [i for i in range(0, len(events)) if not events[i,1]==0]
     problematic_events = events[non_zero_initial_states,:]
-    return problematic_events,nStimuli
+    return problematic_events, nStimuli
 
         
 def fix_superimposed_triggers(events):
@@ -169,7 +169,5 @@ for i in range(0,len(df)):
         
     
 df.to_csv('AttenAud_ERM_MRI_alignment_from_20190314_to_20230327_new_fix.csv')
-
-
 
 

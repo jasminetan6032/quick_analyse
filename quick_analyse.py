@@ -40,6 +40,7 @@ def find_response_triggers(events):
         print("Warning: Missing all response triggers")
 
 def remove_spurious_triggers(events):
+    #removes triggers in which sample was interrupted on the way to the intended trigger
     spurious_triggers = [i for i in range(0, len(events)) if events[i,1]!=0 and events[i,1]==events[i-1,2] and events[i,0]-events[i-1,0]==1]
     for i in spurious_triggers:
         events = numpy.delete(events, i-1,0)
@@ -53,7 +54,12 @@ def check_triggers(events):
     if len(list_of_stimuli_triggers) != cfg.number_of_stimuli:
         warning = 'Unexpected number of stimuli triggers: '
         print(colored(warning + str(len(list_of_stimuli_triggers)),'magenta'))
-
+    
+    #print number of responses triggers to check for sticky or missing responses
+    list_of_response_triggers = [i for i in stimuli_list if i > 255]
+    report_nResponses = 'Number of response triggers: '
+    print(colored(report_nResponses + str(len(list_of_response_triggers)),'magenta'))
+    
     #check column two for any triggers that do not start from zero and extract events to eyeball
     non_zero_initial_states = [i for i in range(0, len(events)) if not events[i,1]==0]
     problematic_events = events[non_zero_initial_states,:]
@@ -148,7 +154,7 @@ files.sort()
 for file in files:
     raw = mne.io.read_raw_fif(file)
     try:
-        events = mne.find_events(raw, stim_channel='STI101')
+        events = mne.find_events(raw, stim_channel='STI101', uint_cast= True)
     except:
         events = mne.find_events(raw, stim_channel='STI101',shortest_event=1,uint_cast= True)
         print(colored("Warning: ValueError:shortest event length = 1",'blue'))

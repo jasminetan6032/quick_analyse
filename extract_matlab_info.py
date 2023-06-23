@@ -62,7 +62,7 @@ for i in range(0,len(behav_df)):
         print(error_message)
         
         
-mat = scipy.io.loadmat('/local_mount/space/hypatia/2/users/Jasmine/github/Misophonia/results/KSU_test_19-May-2023_12:37:17_Results.mat')
+mat = scipy.io.loadmat('/autofs/cluster/transcend/MEG/AttenAud/009901/visit_20190515/009901_AttenAud_run2_behaviour.mat')
 triggers = mat['Triggers_trace']
 triggers = list(triggers)
 
@@ -76,3 +76,10 @@ responses_counts = responses.value_counts()
 
 behavioural_summary = { "Hits":responses_counts[1.0], "Misses":responses_counts[1000.0],
                     "%correct":round(responses_counts[1.0]/(responses_counts[1.0]+responses_counts[1000.0]),2)}
+
+stimuli_list = fixed_events[:,2].tolist()
+list_of_stimuli_triggers = [i for i in stimuli_list if i < 255] 
+list_of_response_triggers = [i for i in stimuli_list if i > 255] 
+responses['triggers'] = list_of_stimuli_triggers
+
+metadata['matlab_responses'] = responses_mat[:,0]

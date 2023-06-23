@@ -9,6 +9,8 @@ import pandas
 import mne
 import numpy
 import quick_analyse_config as cfg
+import datetime
+import pytz
 from termcolor import colored
 
 def find_response_triggers(events):
@@ -41,6 +43,7 @@ def find_response_triggers(events):
         print("Warning: Missing all response triggers")
 
 def fix_old_triggers(events):
+    #the first version of the code used the following triggers for deviants. This code replaces them with the currently used triggers for easier analysis.
     old_triggers = [131,132,133,134]
     old_triggers_to_fix = [i for i in range(0, len(events)) if numpy.any(events[i,2]== old_triggers)]
     if len(old_triggers_to_fix) > 0:
@@ -49,6 +52,16 @@ def fix_old_triggers(events):
         events[events[:,2] == 133,2] = 37
         events[events[:,2] == 134,2] = 38 
     return events
+
+def shift_triggers(raw,events):
+    #The previous experimental code sent the triggers at sound offset rather than onset. This function shifts triggers for standards, deviants and targets by 50ms to the onset of the sound.  
+    date = raw.info['meas_date']
+    trigger_correction_date = datetime.datetime(2023,5,17,tzinfo=pytz.utc)
+    if date < trigger_correction_date:
+        beeps_standards_devs = [i for i in range(0, len(events)) if (numpy.all(events[i,2]!= [25,26,27,28]) and numpy.all(events[i,2] != cfg.all_responses))] 
+        for i in beeps_standards_devs:
+            events[i,0] = events[i,0] - 50
+        #novels = [i for i in range(0, len(events)) if numpy.any(events[i,2]== [25,26,27,28])] 
 
 def remove_spurious_triggers(events):
     spurious_triggers = [i for i in range(0, len(events)) if events[i,1]!=0 and events[i,1]==events[i-1,2] and events[i,0] - events[i-1,0]==1]
@@ -120,12 +133,17 @@ def find_sticky_triggers(events,trigger):
 
     sticky_trigger_array = numpy.array(list(sticky_trigger_dict.items()))
     return sticky_trigger_array
-#     #defined as any response triggers that follow a response trigger or a trigger corrected from an initial state of a response trigger
-#     stuck_triggers = [i for i in range(0, len(events)) if numpy.any(events[i,2]== cfg.all_responses) and (numpy.any(events[i-1,2]== cfg.all_responses) or numpy.any(events[i-1,1]== cfg.all_responses))]
-#     time_to_repeat = pandas.Series(original_events[stuck_triggers,3])
+
+    
+def remove_stuck_triggers(events):
+    #stuck triggers are defined as any response triggers that follow a response trigger or a trigger corrected from an initial state of a response trigger
+    stuck_triggers = [i for i in range(0, len(events)) if numpy.any(events[i,2]== cfg.all_responses) and (numpy.any(events[i-1,2]== cfg.all_responses) or numpy.any(events[i-1,1]== cfg.all_responses))]
+    valid_triggers = [i for i in range(0,len(events)) if i not in stuck_triggers]
+    fixed_events = events[valid_triggers,:]
+    return fixed_events
+    #time_to_repeat = pandas.Series(original_events[stuck_triggers,3])
         
 
-        
 #load alignment csv file
 df = pandas.read_csv ('/local_mount/space/hypatia/2/users/Jasmine/github/alignment/AttenAud_ERM_MRI_alignment_from_20190314_to_20230327.csv')
 df['problematic_events'] = ''
@@ -155,6 +173,8 @@ for i in range(0,len(df)):
     df.at[i,'nStimuli'] = nStimuli
     
     fixed_events = fix_superimposed_triggers(events)
+
+    fixed_events = remove_stuck_triggers(fixed_events)
     
     new_problematic_events, new_nStimuli = check_triggers(fixed_events)
     

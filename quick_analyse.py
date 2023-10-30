@@ -120,7 +120,7 @@ def get_metadata_and_behaviour(events):
                         "Targets_on_R_Attend_R":stimuli_counts['target','right'].sum(),"Targets_on_L_Attend_L":stimuli_counts['target','left'].sum(),
                         "Novels_on_R_Attend_L":stimuli_counts['novel','right'].sum(),"Novels_on_L_Attend_R":stimuli_counts['novel','left'].sum(),
                         "Distractors_on_R_Attend_L":stimuli_counts['dev','right'].sum(),"Distractors_on_L_Attend_R":stimuli_counts['dev','left'].sum(),
-                        "Misophones_on_R_Attend_L":stimuli_counts['misophone','right'].sum(),"Misophones_on_L_Attend_R":stimuli_counts['misophone','right'].sum(),
+                        "Misophones_on_R_Attend_L":stimuli_counts['misophone','right'].sum(),"Misophones_on_L_Attend_R":stimuli_counts['misophone','left'].sum(),
                         "Hits": response_counts['Hit'], "FalseAlarms": response_counts['False Alarm'], "IncorrectResponses":response_counts['Incorrect Response'],
                         "Misses":response_counts['Missed Target'],"CorrectRejections":response_counts['Correct Rejection'],
                         "nStimuli":len(metadata),"nResponses":metadata['response'].notna().sum()}])

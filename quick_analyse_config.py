@@ -8,13 +8,15 @@ Created on Tue May  9 15:03:31 2023
 import os
 import pandas
 
-paradigm = 'AttenAud'
-participant = '085601'
-date = 211002
+paradigm = 'AttenVis'
+participant = '126701'
+date = 231030
 
 MEG_dir = '/autofs/space/megraid_research/MEG/tal'
+#transcend_dir = '/autofs/cluster/transcend/MEG'
 
-data_dir = os.path.join(MEG_dir,'subj_'+ participant,str(date)+'/')
+data_dir = os.path.join(MEG_dir,'subj_' + participant,str(date)+'/')
+#data_dir = os.path.join(transcend_dir,paradigm,participant,'visit_' + str(date) + '/')
 
 correct_stimuli_triggers = {'AttenVis': 168*2, #targets and stimuli grids
                             'AttenAud': 288,

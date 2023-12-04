@@ -8,9 +8,9 @@ Created on Tue May  9 15:03:31 2023
 import os
 import pandas
 
-paradigm = 'AttenVis'
-participant = '126701'
-date = 231030
+paradigm = 'Misophonia'
+participant = '126401'
+date = 231204
 
 MEG_dir = '/autofs/space/megraid_research/MEG/tal'
 #transcend_dir = '/autofs/cluster/transcend/MEG'

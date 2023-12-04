@@ -39,7 +39,7 @@ novels = data_long[data_long["Misophonic trigger"] == 0]
 novels = novels.sort_values(by="Rating",ascending = False)
 bottom3_novels_avg = novels["Rating"][-3:].mean()
 
-if top5_miso_avg - bottom3_novels_avg > 5:
+if top5_miso_avg/bottom3_novels_avg > 0.5:
     print("Participant has valid sounds for experiment")
 else: print(colored("Participant does NOT have valid sounds for experiment",'red'))
     

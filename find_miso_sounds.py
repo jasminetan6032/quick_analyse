@@ -6,7 +6,24 @@ Created on Tue Oct  3 13:22:44 2023
 @author: jwt30
 """
 import pandas as pd
+import os
+import shutil
 from termcolor import colored
+
+downloads_dir = "/homes/7/jwt30/Downloads/"
+
+download_file = []
+
+for path, directory_names, filenames in os.walk(downloads_dir):
+    for filename in filenames:
+        if 'MisophoniaAudioQuest' in filename:
+            download_file = os.path.join(path,filename)
+
+if download_file:
+    shutil.move(download_file, '/local_mount/space/hypatia/2/users/Jasmine/github/quick_analyse/MisophoniaAudioRatings.csv')
+else: 
+    print(colored("No RedCap file in Downloads. Do you need an updated file? If so, download from RedCap (with labels).",'yellow'))
+
 
 #make sure you always have an updated file from RedCap called MisophoniaAudioRatings in quick_analyse
 filepathname = '/local_mount/space/hypatia/2/users/Jasmine/github/quick_analyse/MisophoniaAudioRatings.csv'
